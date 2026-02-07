@@ -37,10 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'api',
-    'django_extensions'
-    ]
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -118,9 +115,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
-from decouple import config
-# Yandex GPT
-YANDEX_GPT_API_KEY = config('YANDEX_GPT_API_KEY')
-YANDEX_GPT_FOLDER_ID = config('YANDEX_GPT_FOLDER_ID')
-TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN')
