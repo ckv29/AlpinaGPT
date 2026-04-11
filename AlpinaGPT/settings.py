@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'AlpinaGPT.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': "app-postgres",
+        'PORT': 5432,
+        'NAME': 'django-app',
+        'USER': 'user1',
+        'PASSWORD': 'password1',
     }
 }
 
@@ -124,3 +128,5 @@ from decouple import config
 YANDEX_GPT_API_KEY = config('YANDEX_GPT_API_KEY')
 YANDEX_GPT_FOLDER_ID = config('YANDEX_GPT_FOLDER_ID')
 TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN')
+
+COMPOSE_BAKE = True

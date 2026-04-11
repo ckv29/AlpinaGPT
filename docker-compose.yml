@@ -1,0 +1,25 @@
+services:
+  app:
+    image: django_app
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - app-postgres
+
+
+  app-postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432":"5432"
+    volumes:
+      - "app-postgress:/var/lib/postresql/data"
+    environment:
+      POSTGRES_DB : django_app
+      POSTGRES_USER : user1
+      POSTGRESS_PASSWORD : password1
+
+volumes:
+  app-postgres:
+    name : "app-postgres"
