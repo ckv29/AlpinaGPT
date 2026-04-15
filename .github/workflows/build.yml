@@ -6,6 +6,11 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  REGISTRY: ghcr.io
+  # Пишем имя образа вручную в нижнем регистре — независимо от имени репо
+  IMAGE_NAME: ckv29/alpina-gpt
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -21,7 +26,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository }}:latest .
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest .
 
       - name: Push Docker image
         run: docker push ghcr.io/${{ github.repository }}:latest
