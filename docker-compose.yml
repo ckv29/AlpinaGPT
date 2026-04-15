@@ -1,6 +1,6 @@
 services:
   app:
-    image: django_app
+    image: django_app1
     build:
       context: .
     ports:
