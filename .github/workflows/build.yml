@@ -6,11 +6,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  # Пишем имя образа вручную в нижнем регистре — независимо от имени репо
-  IMAGE_NAME: ckv29/alpina-gpt
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -26,10 +21,10 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest .
+        run: docker build -t ghcr.io/${{ github.repository }}:latest -f django-backend/Dockerfile django-backend
 
       - name: Push Docker image
-        run: docker push ghcr.io/${{ env.IMAGE_NAME }}:latest
+        run: docker push ghcr.io/${{ github.repository }}:latest
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
@@ -39,24 +34,10 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             echo "${{ secrets.VPS_GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker pull ghcr.io/${{ env.IMAGE_NAME }}:latest
+            docker pull ghcr.io/${{ github.repository }}:latest
             cd /root/django
-            echo "=== DEBUG START ==="
-            whoami
-            pwd
-            echo "--- All files ---"
-            find . -maxdepth 2 -type f -name "*.txt" -o -name "Dockerfile" -o -name "docker-compose.yml"
-            echo "--- requirements.txt content ---"
-            cat requirements.txt | head -10
-            echo "--- .dockerignore content ---"
-            cat .dockerignore 2>/dev/null || echo "No .dockerignore"
-            echo "--- Docker context test ---"
-            docker build --no-cache -t test-context . 2>&1 | grep -E "(context|ERROR|requirements)"
-            echo "=== DEBUG END ==="
-  
             docker compose down && docker compose up -d
             docker logout ghcr.io
-
       - name: Logout from GitHub Container Registry
         if: always()
         run: docker logout ghcr.io
