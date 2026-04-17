@@ -41,6 +41,19 @@ jobs:
             echo "${{ secrets.VPS_GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker pull ghcr.io/${{ env.IMAGE_NAME }}:latest
             cd /root/django
+            echo "=== DEBUG START ==="
+            whoami
+            pwd
+            echo "--- All files ---"
+            find . -maxdepth 2 -type f -name "*.txt" -o -name "Dockerfile" -o -name "docker-compose.yml"
+            echo "--- requirements.txt content ---"
+            cat requirements.txt | head -10
+            echo "--- .dockerignore content ---"
+            cat .dockerignore 2>/dev/null || echo "No .dockerignore"
+            echo "--- Docker context test ---"
+            docker build --no-cache -t test-context . 2>&1 | grep -E "(context|ERROR|requirements)"
+            echo "=== DEBUG END ==="
+  
             docker compose down && docker compose up -d
             docker logout ghcr.io
 
