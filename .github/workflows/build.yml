@@ -40,7 +40,7 @@ jobs:
           script: |
             echo "${{ secrets.VPS_GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker pull ghcr.io/${{ env.IMAGE_NAME }}:latest
-            cd /home/root/django
+            cd /home/django
             docker compose down && docker compose up -d
             docker logout ghcr.io
 
