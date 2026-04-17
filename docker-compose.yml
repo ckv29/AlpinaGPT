@@ -20,6 +20,25 @@ services:
       - POSTGRES_USER=user1
       - POSTGRES_PASSWORD=password1    # ✅ Исправлено: POSTGRESS → POSTGRES
 
+  stt_nginx:
+      image: nginx:alpine
+      container_name: stt_nginx
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        - ./nginx/conf.d:/etc/nginx/conf.d:ro
+        - ./static:/app/static
+        - ./media:/app/media
+        - ./nginx/certbot/conf:/etc/letsencrypt
+        - ./nginx/certbot/www:/var/www/certbot
+      depends_on:
+        - stt_django
+      networks:
+        - backend
+      restart: always
+
 volumes:
   app-postgres:
     name : "app-postgres"
